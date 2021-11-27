@@ -26,9 +26,7 @@ dotenv.load_dotenv()
 # if returns a blank message -> do nothing or turn on red light
 # else if a phone number is also returned with the name, store phone number in variable for furhter use
 
-# get random password
-
-
+# get random password from file
 def getRandomWord():
     f = open("words.txt", "r")
     line_number = random.choice(range(6800))
