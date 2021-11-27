@@ -10,8 +10,8 @@ import random
 # AUTH_TOKEN=
 # USER_PHONE=
 # FROM_PH=
-# API_KEY
-# API_SECRET
+# API_KEY=
+# API_SECRET=
 dotenv.load_dotenv()
 # while true loop
 #   listen for button press
@@ -27,6 +27,8 @@ dotenv.load_dotenv()
 # else if a phone number is also returned with the name, store phone number in variable for furhter use
 
 # get random password from file
+
+
 def getRandomWord():
     f = open("words.txt", "r")
     line_number = random.choice(range(6800))
