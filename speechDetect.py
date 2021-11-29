@@ -178,6 +178,7 @@ try:
             faces_detected = faceDetect(encode())
             if faces_detected == '""':
                 print("No verified individuals detected")
+                setLockStatus(LOCK_NAME,False)
                 lock(True)
             else:
                 # ask the user to say their 2FA pw
