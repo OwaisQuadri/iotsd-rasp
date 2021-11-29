@@ -186,7 +186,7 @@ try:
             else:
                 user_phone=detectedJSON[0]['phone']
                 # ask the user to say their 2FA pw
-                print("A password was sent to your registered phone, wait 5 seconds...")
+                print("A password was sent to your registered phone, wait 10 seconds...")
                 # the password is a random word taken from a list of 6800 commonly used nouns (could be a combo in future)
                 pswd = getRandomWord()
                 # print(pswd) # test
@@ -195,9 +195,8 @@ try:
                                     from_=twilio_phone,
                                     body="Your 2FA password is: " +
                                     pswd)
-                # after 5 seconds:
-                sleep(5)
-                print("Please say the password:")
+                # after 10 seconds:
+                sleep(10)
 
                 # check if password matches voice input
                 inputText = listenFor()
