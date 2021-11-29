@@ -137,7 +137,7 @@ def checkLockStatus(lock_name):
     headers = {
         'Authorization': f"Basic {cred}"
     }
-    response = request.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=headers)
     reply=response.text
     print(response.status_code,reply )
     if "true" in reply:
@@ -146,15 +146,16 @@ def checkLockStatus(lock_name):
         lock(False)
 
 def setLockStatus(lock_name,status):
-    url = f'http://validation--api.herokuapp.com/status/{lock_name}'
+    url = f'http://validation--api.herokuapp.com/status/'
     cred=os.getenv("FACE_API_BASIC")
     headers = {
         'Authorization': f"Basic {cred}"
     }
     payload={
+        "lock_name":lock_name,
         "status":status
     }
-    response = request.request("POST", url, headers=headers,data=payload)
+    response = requests.request("POST", url, headers=headers,data=payload)
     reply=response.text
     print(response.status_code,reply )
     if "true" in reply:
@@ -166,12 +167,16 @@ def setLockStatus(lock_name,status):
 try:
     counter=0
     while True:
+        #every 10000 ticks check the lock status
         if counter == 10000:
             checkLockStatus("LockName")
             counter=0
             break
+        #listen for button presses every tick
         if GPIO.input(25):
+            #turn off light
             GPIO.output(18, False)
+        
         faces_detected = faceDetect(encode())
         if faces_detected == '""':
             print("No verified individuals detected")
@@ -214,5 +219,3 @@ try:
         counter+=1
 except KeyboardInterrupt:
     print("^C Detected: Exiting ...")
-                print(f"the password was incorrect: '{pswd}'")
-                lock(True)
