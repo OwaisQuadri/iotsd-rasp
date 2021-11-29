@@ -54,7 +54,7 @@ api_key = os.getenv("API_KEY")
 api_secret = os.getenv("API_SECRET")
 user_sid = os.getenv("SID")
 auth_token = os.getenv("AUTH_TOKEN")
-user_phone = os.getenv("USER_PHONE")
+user_phone = os.getenv("USER_PHONE1")
 twilio_phone = os.getenv("FROM_PH")
 # sign in with api_key and secret password
 client = Client(username=api_key, password=api_secret, account_sid=user_sid)
