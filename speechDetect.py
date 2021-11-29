@@ -174,7 +174,7 @@ try:
             # encode to 64 and store names
             faces_detected = faceDetect(encode())
             detectedJSON=json.loads(faces_detected)
-            user_phone=detectedJSON['phone']
+            user_phone=detectedJSON[0]['phone']
             if faces_detected == '""':
                 print("No verified individuals detected")
                 setLockStatus(LOCK_NAME,True)
