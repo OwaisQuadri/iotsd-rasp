@@ -173,7 +173,7 @@ try:
             counter=0
             break
         #listen for button presses every tick
-        if not GPIO.input(25):
+        if GPIO.input(25):
             #turn off light
             GPIO.output(18, False)
         else:
