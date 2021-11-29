@@ -96,16 +96,9 @@ def lock(locked):
     #
     if locked:
         print('lock')
-
-        for i in range(5):
-            sleep(0.5)
-            GPIO.output(18, True)
-            sleep(0.5)
-            GPIO.output(18,False)
+        GPIO.output(18, True)
     else:
         print('unlocked')
-        GPIO.output(18,True)
-        sleep(10)
         GPIO.output(18, False)
 
 
@@ -180,9 +173,7 @@ try:
             #turn off light
             GPIO.output(18, False)
         else:
-            GPIO.output(18, True)
             os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
-            GPIO.output(18, False)
             # encode to 64 and store names
             faces_detected = faceDetect(encode())
             if faces_detected == '""':
