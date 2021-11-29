@@ -171,7 +171,6 @@ try:
         if counter == 10000:
             checkLockStatus("LockName")
             counter=0
-            break
         #listen for button presses every tick
         if GPIO.input(25):
             #turn off light
