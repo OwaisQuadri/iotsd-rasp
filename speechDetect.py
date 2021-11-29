@@ -1,3 +1,4 @@
+LOCK_NAME="lock1"
 import speech_recognition as spr
 import os
 from twilio.rest import Client
@@ -169,7 +170,7 @@ try:
     while True:
         #every 10000 ticks check the lock status
         if counter == 10000:
-            checkLockStatus("LockName")
+            checkLockStatus(LOCK_NAME)
             counter=0
         #listen for button presses every tick
         if GPIO.input(25):
@@ -205,10 +206,12 @@ try:
                 if pswd in inputText:
                     # toggle lock
                     print("toggle lock")
+                    setLockStatus(LOCK_NAME,False)
                     lock(False)
                 else:
                     print(f"the password was incorrect: '{pswd}'")
                     lock(True)
+                    setLockStatus(LOCK_NAME,True)
                 break
         counter+=1
 except KeyboardInterrupt:
