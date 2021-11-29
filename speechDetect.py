@@ -94,9 +94,15 @@ def lock(locked):
     #
     if locked:
         print('lock')
-        GPIO.output(18, True)
+        for i in range(5):
+            sleep(0.5)
+            GPIO.output(18, True)
+            sleep(0.5)
+            GPIO.output(18,False)
     else:
         print('unlocked')
+        GPIO.output(18,True)
+        sleep(10)
         GPIO.output(18, False)
 
 
@@ -136,8 +142,9 @@ while True:
         # encode to 64
 
         faces_detected = faceDetect(encode())
-        if len(faces_detected) == 0:
-            print("No faces_detected")
+        if faces_detected == '""':
+            print("No verified individuals detected")
+            lock(True)
         else:
             # ask the user to say their 2FA pw
             print("A password was sent to your registered phone, wait 5 seconds...")
@@ -163,4 +170,3 @@ while True:
             else:
                 print(f"the password was incorrect: '{pswd}'")
                 lock(True)
-            break
