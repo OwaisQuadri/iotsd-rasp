@@ -10,6 +10,7 @@ import time
 import picamera
 import base64
 import requests
+import json
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -95,6 +96,7 @@ def lock(locked):
     #
     if locked:
         print('lock')
+
         for i in range(5):
             sleep(0.5)
             GPIO.output(18, True)
@@ -139,9 +141,10 @@ def checkLockStatus(lock_name):
         'Authorization': f"Basic {cred}"
     }
     response = requests.request("GET", url, headers=headers)
-    reply=response.text
-    print(response.status_code,reply )
-    if "true" in reply:
+    reply=json.loads(response.text)
+    print(response.status_code,reply["status"] )
+
+    if reply["status"] ==True:
         lock(True)
     else:
         lock(False)
