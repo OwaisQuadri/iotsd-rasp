@@ -8,7 +8,7 @@ import RPi.GPIO as GPIO
 import time
 import picamera
 import base64
-import request
+import requests
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -55,22 +55,23 @@ dotenv.load_dotenv()
 def encode():
     with open('test.jpg', 'rb') as img:
         encoded_img = base64.standard_b64encode(img.read())
-        print(str(encoded_img))
-        return str(encoded_img)
+        print(encoded_img)
+        return encoded_img
 
 
 def faceDetect(img):
     url = 'http://validation--api.herokuapp.com/?format=json'
     payload = {
-        "face": f"{img}",
+        "face": img,
         "known": False
     }
     cred=os.getenv("FACE_API_BASIC")
     headers = {
         'Authorization': f"Basic {cred}"
     }
-    response = request.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload)
     print(response.status_code, response.text)
+    return response.text
 # mine
 
 
@@ -93,9 +94,15 @@ def lock(locked):
     #
     if locked:
         print('lock')
-        GPIO.output(18, True)
+        for i in range(5):
+            sleep(0.5)
+            GPIO.output(18, True)
+            sleep(0.5)
+            GPIO.output(18,False)
     else:
         print('unlocked')
+        GPIO.output(18,True)
+        sleep(10)
         GPIO.output(18, False)
 
 
@@ -165,6 +172,10 @@ try:
             break
         if GPIO.input(25):
             GPIO.output(18, False)
+        faces_detected = faceDetect(encode())
+        if faces_detected == '""':
+            print("No verified individuals detected")
+            lock(True)
         else:
             GPIO.output(18, True)
             os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
@@ -203,3 +214,5 @@ try:
         counter+=1
 except KeyboardInterrupt:
     print("^C Detected: Exiting ...")
+                print(f"the password was incorrect: '{pswd}'")
+                lock(True)
