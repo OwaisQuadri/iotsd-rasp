@@ -56,12 +56,13 @@ def encode():
     with open('test.jpg', 'rb') as img:
         encoded_img = base64.b64encode(img.read())
         print(encoded_img)
+        return encoded_img
 
 
-def faceDetect():
-    url = 'http://validation--api.herokuapp.com/'
+def faceDetect(img):
+    url = 'http://validation--api.herokuapp.com/?format=json'
     payload = {
-        "face": "",
+        "face": f"{img}",
         "known": False
     }
     headers = {
@@ -91,9 +92,10 @@ def lock(locked):
     #
     if locked:
         print('lock')
-        GPIO.output(18,True)
+        GPIO.output(18, True)
     else:
         print('unlocked')
+        GPIO.output(18, False)
 
 
 # function to listen
@@ -130,8 +132,8 @@ while True:
         os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
         GPIO.output(18, False)
         # encode to 64
-        encode()
-        faces_detected = faceDetect()
+
+        faces_detected = faceDetect(encode())
         if len(faces_detected) == 0:
             print("No faces_detected")
         else:
