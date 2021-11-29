@@ -173,23 +173,18 @@ try:
             counter=0
             break
         #listen for button presses every tick
-        if GPIO.input(25):
+        if not GPIO.input(25):
             #turn off light
             GPIO.output(18, False)
-        
-        faces_detected = faceDetect(encode())
-        if faces_detected == '""':
-            print("No verified individuals detected")
-            lock(True)
         else:
             GPIO.output(18, True)
             os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
             GPIO.output(18, False)
-            # encode to 64
-
+            # encode to 64 and store names
             faces_detected = faceDetect(encode())
-            if len(faces_detected) == 0:
-                print("No faces_detected")
+            if faces_detected == '""':
+                print("No verified individuals detected")
+                lock(True)
             else:
                 # ask the user to say their 2FA pw
                 print("A password was sent to your registered phone, wait 5 seconds...")
