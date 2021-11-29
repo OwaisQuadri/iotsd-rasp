@@ -4,6 +4,16 @@ from twilio.rest import Client
 import dotenv
 from time import sleep
 import random
+import RPi.GPIO as GPIO
+import time
+import picamera
+import base64
+import request
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(18, GPIO.OUT)
+GPIO.setup(25, GPIO.IN)
 # load env variables
 # .env file should include:
 # SID=
@@ -12,6 +22,18 @@ import random
 # FROM_PH=
 # API_KEY=
 # API_SECRET=
+# configure twillio
+api_key = os.getenv("API_KEY")
+api_secret = os.getenv("API_SECRET")
+user_sid = os.getenv("SID")
+auth_token = os.getenv("AUTH_TOKEN")
+user_phone = os.getenv("USER_PHONE1")
+twilio_phone = os.getenv("FROM_PH")
+# sign in with api_key and secret password
+client = Client(username=api_key, password=api_secret, account_sid=user_sid)
+# create speechrecog obj
+r = spr.Recognizer()
+
 dotenv.load_dotenv()
 # while true loop
 #   listen for button press
@@ -26,7 +48,28 @@ dotenv.load_dotenv()
 # if returns a blank message -> do nothing or turn on red light
 # else if a phone number is also returned with the name, store phone number in variable for furhter use
 
+
 # get random password from file
+
+
+def encode():
+    with open('test.jpg', 'rb') as img:
+        encoded_img = base64.b64encode(img.read())
+        print(encoded_img)
+
+
+def faceDetect():
+    url = 'http://validation--api.herokuapp.com/'
+    payload = {
+        "face": "",
+        "known": False
+    }
+    headers = {
+        'Authorization': "Basic x"
+    }
+    response = request.request("POST", url, headers=headers, data=payload)
+    print(response.status_code, response.text)
+# mine
 
 
 def getRandomWord():
@@ -51,18 +94,6 @@ def lock(locked):
     else:
         print('unlocked')
 
-
-# configure twillio
-api_key = os.getenv("API_KEY")
-api_secret = os.getenv("API_SECRET")
-user_sid = os.getenv("SID")
-auth_token = os.getenv("AUTH_TOKEN")
-user_phone = os.getenv("USER_PHONE1")
-twilio_phone = os.getenv("FROM_PH")
-# sign in with api_key and secret password
-client = Client(username=api_key, password=api_secret, account_sid=user_sid)
-# create speechrecog obj
-r = spr.Recognizer()
 
 # function to listen
 
@@ -90,27 +121,40 @@ def listenFor():
     return text
 
 
-# ask the user to say their 2FA pw
-print("A password was sent to your registered phone, wait 5 seconds...")
-# the password is a random word taken from a list of 6800 commonly used nouns (could be a combo in future)
-pswd = getRandomWord()
-# print(pswd) # test
-# send message to user's phone that was fetched from django API
-client.messages.create(to=user_phone,
-                       from_=twilio_phone,
-                       body="Your 2FA password is: " +
-                       pswd)
-# after 5 seconds:
-sleep(5)
-print("Please say the password:")
+while True:
+    if GPIO.input(25):
+        GPIO.output(18, False)
+    else:
+        GPIO.output(18, True)
+        os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
+        # encode to 64
+        encode()
+        faces_detected = faceDetect()
+        if len(faces_detected) == 0:
+            print("No faces_detected")
+        else:
+            # ask the user to say their 2FA pw
+            print("A password was sent to your registered phone, wait 5 seconds...")
+            # the password is a random word taken from a list of 6800 commonly used nouns (could be a combo in future)
+            pswd = getRandomWord()
+            # print(pswd) # test
+            # send message to user's phone that was fetched from django API
+            client.messages.create(to=user_phone,
+                                   from_=twilio_phone,
+                                   body="Your 2FA password is: " +
+                                   pswd)
+            # after 5 seconds:
+            sleep(5)
+            print("Please say the password:")
 
-# check if password matches voice input
-inputText = listenFor()
-# print(inputText)
-if pswd in inputText:
-    # toggle lock
-    print("toggle lock")
-    lock(False)
-else:
-    print(f"the password was incorrect: '{pswd}'")
-    lock(True)
+            # check if password matches voice input
+            inputText = listenFor()
+            # print(inputText)
+            if pswd in inputText:
+                # toggle lock
+                print("toggle lock")
+                lock(False)
+            else:
+                print(f"the password was incorrect: '{pswd}'")
+                lock(True)
+            break
