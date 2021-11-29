@@ -178,7 +178,7 @@ try:
             faces_detected = faceDetect(encode())
             if faces_detected == '""':
                 print("No verified individuals detected")
-                setLockStatus(LOCK_NAME,False)
+                setLockStatus(LOCK_NAME,True)
                 lock(True)
             else:
                 # ask the user to say their 2FA pw
@@ -199,8 +199,6 @@ try:
                 inputText = listenFor()
                 # print(inputText)
                 if pswd in inputText:
-                    # toggle lock
-                    print("toggle lock")
                     setLockStatus(LOCK_NAME,False)
                     lock(False)
                 else:
