@@ -174,12 +174,13 @@ try:
             # encode to 64 and store names
             faces_detected = faceDetect(encode())
             detectedJSON=json.loads(faces_detected)
-            user_phone=detectedJSON[0]['phone']
+            
             if faces_detected == '""':
                 print("No verified individuals detected")
                 setLockStatus(LOCK_NAME,True)
                 lock(True)
             else:
+                user_phone=detectedJSON[0]['phone']
                 # ask the user to say their 2FA pw
                 print("A password was sent to your registered phone, wait 5 seconds...")
                 # the password is a random word taken from a list of 6800 commonly used nouns (could be a combo in future)
@@ -204,7 +205,6 @@ try:
                     print(f"the password was incorrect: '{pswd}'")
                     lock(True)
                     setLockStatus(LOCK_NAME,True)
-                break
         counter+=1
 except KeyboardInterrupt:
     print("^C Detected: Exiting ...")
