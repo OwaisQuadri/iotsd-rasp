@@ -46,7 +46,10 @@ def lock(locked):
     # toggle lock
     # send lock status to API as well as who triggered lock and when
     #
-    print("toggle")
+    if locked:
+        print('lock')
+    else:
+        print('unlocked')
 
 
 # configure twillio
@@ -69,7 +72,8 @@ def listenFor():
     # if True:
     #     return "password"
     with spr.Microphone() as mic:
-        #r.adjust_for_ambient_noise(mic, duration=3)
+        print('say it now:')
+        r.adjust_for_ambient_noise(mic, duration=.2)
         audio = r.listen(mic)
         text = ""
         try:
@@ -78,8 +82,8 @@ def listenFor():
             print("an error occurred: spr.UnknownValueError")
         except spr.RequestError:
             print("an error occurred: spr.RequestError")
-        except:
-            print("an error occurred: idk")
+        except Exception as err:
+            print(f"an error occurred: {err=}: {type(err)=}")
         text = text.lower()
         total += text
 
