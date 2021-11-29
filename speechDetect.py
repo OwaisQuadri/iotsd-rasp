@@ -54,9 +54,9 @@ dotenv.load_dotenv()
 
 def encode():
     with open('test.jpg', 'rb') as img:
-        encoded_img = base64.b64encode(img.read())
-        print(encoded_img)
-        return encoded_img
+        encoded_img = base64.standard_b64encode(img.read())
+        print(str(encoded_img))
+        return str(encoded_img)
 
 
 def faceDetect(img):
@@ -65,8 +65,9 @@ def faceDetect(img):
         "face": f"{img}",
         "known": False
     }
+    cred=os.getenv("FACE_API_BASIC")
     headers = {
-        'Authorization': "Basic x"
+        'Authorization': f"Basic {cred}"
     }
     response = request.request("POST", url, headers=headers, data=payload)
     print(response.status_code, response.text)
@@ -123,42 +124,82 @@ def listenFor():
 
     return text
 
-
-while True:
-    if GPIO.input(25):
-        GPIO.output(18, False)
+def checkLockStatus(lock_name):
+    url = f'http://validation--api.herokuapp.com/status/{lock_name}'
+    cred=os.getenv("FACE_API_BASIC")
+    headers = {
+        'Authorization': f"Basic {cred}"
+    }
+    response = request.request("GET", url, headers=headers)
+    reply=response.text
+    print(response.status_code,reply )
+    if "true" in reply:
+        lock(True)
     else:
-        GPIO.output(18, True)
-        os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
-        GPIO.output(18, False)
-        # encode to 64
+        lock(False)
 
-        faces_detected = faceDetect(encode())
-        if len(faces_detected) == 0:
-            print("No faces_detected")
-        else:
-            # ask the user to say their 2FA pw
-            print("A password was sent to your registered phone, wait 5 seconds...")
-            # the password is a random word taken from a list of 6800 commonly used nouns (could be a combo in future)
-            pswd = getRandomWord()
-            # print(pswd) # test
-            # send message to user's phone that was fetched from django API
-            client.messages.create(to=user_phone,
-                                   from_=twilio_phone,
-                                   body="Your 2FA password is: " +
-                                   pswd)
-            # after 5 seconds:
-            sleep(5)
-            print("Please say the password:")
-
-            # check if password matches voice input
-            inputText = listenFor()
-            # print(inputText)
-            if pswd in inputText:
-                # toggle lock
-                print("toggle lock")
-                lock(False)
-            else:
-                print(f"the password was incorrect: '{pswd}'")
-                lock(True)
+def setLockStatus(lock_name,status):
+    url = f'http://validation--api.herokuapp.com/status/{lock_name}'
+    cred=os.getenv("FACE_API_BASIC")
+    headers = {
+        'Authorization': f"Basic {cred}"
+    }
+    payload={
+        "status":status
+    }
+    response = request.request("POST", url, headers=headers,data=payload)
+    reply=response.text
+    print(response.status_code,reply )
+    if "true" in reply:
+        lock(True)
+    else:
+        lock(False)
+#start script
+#handle interrupt
+try:
+    counter=0
+    while True:
+        if counter == 10000:
+            checkLockStatus("LockName")
+            counter=0
             break
+        if GPIO.input(25):
+            GPIO.output(18, False)
+        else:
+            GPIO.output(18, True)
+            os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
+            GPIO.output(18, False)
+            # encode to 64
+
+            faces_detected = faceDetect(encode())
+            if len(faces_detected) == 0:
+                print("No faces_detected")
+            else:
+                # ask the user to say their 2FA pw
+                print("A password was sent to your registered phone, wait 5 seconds...")
+                # the password is a random word taken from a list of 6800 commonly used nouns (could be a combo in future)
+                pswd = getRandomWord()
+                # print(pswd) # test
+                # send message to user's phone that was fetched from django API
+                client.messages.create(to=user_phone,
+                                    from_=twilio_phone,
+                                    body="Your 2FA password is: " +
+                                    pswd)
+                # after 5 seconds:
+                sleep(5)
+                print("Please say the password:")
+
+                # check if password matches voice input
+                inputText = listenFor()
+                # print(inputText)
+                if pswd in inputText:
+                    # toggle lock
+                    print("toggle lock")
+                    lock(False)
+                else:
+                    print(f"the password was incorrect: '{pswd}'")
+                    lock(True)
+                break
+        counter+=1
+except KeyboardInterrupt:
+    print("^C Detected: Exiting ...")
