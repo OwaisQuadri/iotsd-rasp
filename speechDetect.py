@@ -169,10 +169,7 @@ try:
             checkLockStatus(LOCK_NAME)
             counter=0
         #listen for button presses every tick
-        if GPIO.input(25):
-            #turn off light
-            GPIO.output(18, False)
-        else:
+        if not GPIO.input(25):
             os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
             # encode to 64 and store names
             faces_detected = faceDetect(encode())
@@ -209,3 +206,4 @@ try:
         counter+=1
 except KeyboardInterrupt:
     print("^C Detected: Exiting ...")
+    GPIO.output(18, False)
