@@ -103,13 +103,16 @@ def lock(locked):
 
 
 # function to listen
-
-
+def pulseLight(secs):
+    GPIO.output(18, True)
+    sleep(secs)
+    GPIO.output(18, False)
 def listenFor():
     total = ""
     # if True:
     #     return "password"
     with spr.Microphone() as mic:
+        pulseLight(1)
         print('say it now:')
         r.adjust_for_ambient_noise(mic, duration=.2)
         audio = r.listen(mic)
