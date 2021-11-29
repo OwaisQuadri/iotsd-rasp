@@ -60,7 +60,6 @@ def encode():
         print(encoded_img)
         return encoded_img
 
-
 def faceDetect(img):
     url = 'http://validation--api.herokuapp.com/?format=json'
     payload = {
@@ -73,6 +72,7 @@ def faceDetect(img):
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     print(response.status_code, response.text)
+    
     return response.text
 # mine
 
@@ -173,6 +173,8 @@ try:
             os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
             # encode to 64 and store names
             faces_detected = faceDetect(encode())
+            detectedJSON=json.loads(faces_detected)
+            user_phone=detectedJSON['phone']
             if faces_detected == '""':
                 print("No verified individuals detected")
                 setLockStatus(LOCK_NAME,True)
