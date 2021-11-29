@@ -5,11 +5,12 @@ name = "pypi"
 
 [packages]
 SpeechRecognition = "*"
-winspeech = "*"
-pipwin = "*"
 twilio = "*"
 python-dotenv = "*"
 pyyaml = "*"
+gpio = "*"
+picamera = "*"
+requests = "*"
 
 [dev-packages]
 

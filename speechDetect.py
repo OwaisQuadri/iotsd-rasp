@@ -8,7 +8,7 @@ import RPi.GPIO as GPIO
 import time
 import picamera
 import base64
-import request
+import requests
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -54,7 +54,7 @@ dotenv.load_dotenv()
 
 def encode():
     with open('test.jpg', 'rb') as img:
-        encoded_img = base64.b64encode(img.read())
+        encoded_img = base64.standard_b64encode(img.read())
         print(encoded_img)
         return encoded_img
 
@@ -62,14 +62,16 @@ def encode():
 def faceDetect(img):
     url = 'http://validation--api.herokuapp.com/?format=json'
     payload = {
-        "face": f"{img}",
+        "face": img,
         "known": False
     }
+    cred=os.getenv("FACE_API_BASIC")
     headers = {
-        'Authorization': "Basic x"
+        'Authorization': f"Basic {cred}"
     }
-    response = request.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload)
     print(response.status_code, response.text)
+    return response.text
 # mine
 
 
