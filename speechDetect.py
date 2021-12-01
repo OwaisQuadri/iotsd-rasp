@@ -55,7 +55,7 @@ dotenv.load_dotenv()
 
 
 def encode():
-    with open('test.jpg', 'rb') as img:
+    with open('test.png', 'rb') as img:
         encoded_img = base64.standard_b64encode(img.read())
         print(encoded_img)
         return encoded_img
@@ -177,7 +177,7 @@ try:
             counter=0
         #listen for button presses every tick
         if not GPIO.input(25):
-            os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
+            os.system("libcamera-still -e png -o test.png --width 200 --height 200")
             # encode to 64 and store names
             faces_detected = faceDetect(encode())
             detectedJSON=json.loads(faces_detected)
