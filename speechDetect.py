@@ -72,7 +72,7 @@ def faceDetect(img):
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     print(response.status_code, response.text)
-    
+    response.close()
     return response.text
 # mine
 
@@ -145,6 +145,7 @@ def checkLockStatus(lock_name):
         lock(True)
     else:
         lock(False)
+    response.close()
 
 def setLockStatus(lock_name,status):
     url = f'http://validation--api.herokuapp.com/status/'
@@ -163,7 +164,9 @@ def setLockStatus(lock_name,status):
         lock(True)
     else:
         lock(False)
+    response.close()
 #start script
+
 #handle interrupt
 try:
     counter=0
