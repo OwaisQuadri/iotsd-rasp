@@ -173,7 +173,9 @@ try:
             checkLockStatus(LOCK_NAME)
             counter=0
         #listen for button presses every tick
-        if not GPIO.input(25):
+        if GPIO.input(25):
+            pass
+        else:
             os.system("libcamera-jpeg -o test.jpg --width 200 --height 200")
             # encode to 64 and store names
             faces_detected = faceDetect(encode())
