@@ -1,16 +1,16 @@
-LOCK_NAME="lock1"
-import speech_recognition as spr
-import os
-from twilio.rest import Client
-import dotenv
-from time import sleep
-import random
-import RPi.GPIO as GPIO
-import time
-import picamera
-import base64
-import requests
 import json
+import requests
+import base64
+import picamera
+import time
+import RPi.GPIO as GPIO
+import random
+from time import sleep
+import dotenv
+from twilio.rest import Client
+import os
+import speech_recognition as spr
+LOCK_NAME = "lock1"
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -60,13 +60,14 @@ def encode():
         print(encoded_img)
         return encoded_img
 
+
 def faceDetect(img):
     url = 'http://validation--api.herokuapp.com/?format=json'
     payload = {
         "face": img,
         "known": False
     }
-    cred=os.getenv("FACE_API_BASIC")
+    cred = os.getenv("FACE_API_BASIC")
     headers = {
         'Authorization': f"Basic {cred}"
     }
@@ -108,6 +109,8 @@ def pulseLight(secs):
     GPIO.output(18, True)
     sleep(secs)
     GPIO.output(18, False)
+
+
 def listenFor():
     total = ""
     # if True:
@@ -131,65 +134,77 @@ def listenFor():
 
     return text
 
+
 def checkLockStatus(lock_name):
     url = f'http://validation--api.herokuapp.com/status/{lock_name}'
-    cred=os.getenv("FACE_API_BASIC")
+    cred = os.getenv("FACE_API_BASIC")
     headers = {
         'Authorization': f"Basic {cred}"
     }
     response = requests.request("GET", url, headers=headers)
-    reply=json.loads(response.text)
-    print(response.status_code,reply["status"] )
+    reply = json.loads(response.text)
+    print(response.status_code, reply["status"])
 
-    if reply["status"] ==True:
+    if reply["status"] == True:
         lock(True)
     else:
         lock(False)
     response.close()
 
-def setLockStatus(lock_name,status):
+
+def setLockStatus(lock_name, status, recogName=None):
     url = f'http://validation--api.herokuapp.com/status/'
-    cred=os.getenv("FACE_API_BASIC")
+    cred = os.getenv("FACE_API_BASIC")
     headers = {
         'Authorization': f"Basic {cred}"
     }
-    payload={
-        "lock_name":lock_name,
-        "status":status
-    }
-    response = requests.request("POST", url, headers=headers,data=payload)
-    reply=response.text
-    print(response.status_code,reply )
+    if recogName is not None:
+        payload = {
+            "lock_name": lock_name,
+            "status": status,
+            "changed_by": recogName,
+        }
+    else:
+        payload = {
+            "lock_name": lock_name,
+            "status": status,
+        }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    reply = response.text
+    print(response.status_code, reply)
     if "true" in reply:
         lock(True)
     else:
         lock(False)
     response.close()
-#start script
+# start script
 
-#handle interrupt
+
+# handle interrupt
 try:
-    counter=0
+    counter = 0
     while True:
-        #every 10000 ticks check the lock status
+        # every 10000 ticks check the lock status
         if counter == 10000:
             checkLockStatus(LOCK_NAME)
-            counter=0
-        #listen for button presses every tick
+            counter = 0
+        # listen for button presses every tick
         if GPIO.input(25):
-            pass 
+            pass
         else:
-            os.system("libcamera-still -e png -o test.png --width 200 --height 200")
+            os.system(
+                "libcamera-still -e png -o test.png --width 200 --height 200")
             # encode to 64 and store names
             faces_detected = faceDetect(encode())
-            detectedJSON=json.loads(faces_detected)
-            
+            detectedJSON = json.loads(faces_detected)
+
             if faces_detected == '""':
                 print("No verified individuals detected")
-                setLockStatus(LOCK_NAME,True)
+                setLockStatus(LOCK_NAME, True)
                 lock(True)
             else:
-                user_phone=detectedJSON[0]['phone']
+                user_phone = detectedJSON[0]['phone']
+                user_name = detectedJSON[0]['name']
                 # ask the user to say their 2FA pw
                 print("A password was sent to your registered phone, wait 10 seconds...")
                 # the password is a random word taken from a list of 6800 commonly used nouns (could be a combo in future)
@@ -197,9 +212,9 @@ try:
                 # print(pswd) # test
                 # send message to user's phone that was fetched from django API
                 client.messages.create(to=user_phone,
-                                    from_=twilio_phone,
-                                    body="Your 2FA password is: " +
-                                    pswd)
+                                       from_=twilio_phone,
+                                       body="Your 2FA password is: " +
+                                       pswd)
                 # after 10 seconds:
                 sleep(10)
 
@@ -207,13 +222,13 @@ try:
                 inputText = listenFor()
                 # print(inputText)
                 if pswd in inputText:
-                    setLockStatus(LOCK_NAME,False)
+                    setLockStatus(LOCK_NAME, False, recogName=user_name)
                     lock(False)
                 else:
                     print(f"the password was incorrect: '{pswd}'")
                     lock(True)
-                    setLockStatus(LOCK_NAME,True)
-        counter+=1
+                    setLockStatus(LOCK_NAME, True)
+        counter += 1
 except KeyboardInterrupt:
     print("^C Detected: Exiting ...")
     GPIO.output(18, False)
