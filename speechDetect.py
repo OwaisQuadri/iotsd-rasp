@@ -200,7 +200,7 @@ try:
 
             if faces_detected == '""':
                 print("No verified individuals detected")
-                setLockStatus(LOCK_NAME, True, "Intended System Behavior")
+                setLockStatus(LOCK_NAME, True, "Unauthorized User Detection")
                 lock(True)
             else:
                 user_phone = detectedJSON[0]['phone']
