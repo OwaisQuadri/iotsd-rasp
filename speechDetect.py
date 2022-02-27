@@ -184,8 +184,8 @@ def setLockStatus(lock_name, status, recogName=None):
 try:
     counter = 0
     while True:
-        # every 10000 ticks check the lock status
-        if counter == 10000:
+        # every 100000 ticks check the lock status
+        if counter == 100000:
             checkLockStatus(LOCK_NAME)
             counter = 0
         # listen for button presses every tick
