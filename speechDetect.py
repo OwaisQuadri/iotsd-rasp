@@ -144,11 +144,11 @@ def checkLockStatus(lock_name):
     response = requests.request("GET", url, headers=headers)
     reply = json.loads(response.text)
     print(response.status_code, reply["status"])
-
-    if reply["status"] == True:
-        lock(True)
-    else:
-        lock(False)
+    if response.status_code == 200:
+        if reply["status"] == True:
+            lock(True)
+        else:
+            lock(False)
     response.close()
 
 
