@@ -97,18 +97,26 @@ def lock(locked):
     #
     if locked:
         print('lock')
-        GPIO.output(18, True)
     else:
         print('unlocked')
-        GPIO.output(18, False)
 
 
+def toggleLED(bool):
+    GPIO.output(18, bool)
 # function to listen
+
+
 def pulseLight(secs):
-    print("Pulse")
-    GPIO.output(18, True)
+    toggleLED(True)
     sleep(secs)
-    GPIO.output(18, False)
+    toggleLED(False)
+
+
+def blinkLED():
+    num = random.choice(10)
+    for n in num:
+        pulseLight(0.5)
+    return num
 
 
 def listenFor():
@@ -217,13 +225,22 @@ try:
                                        pswd)
                 # after 10 seconds:
                 sleep(10)
-
+                toggleLED(True)  # turn on light
                 # check if password matches voice input
                 inputText = listenFor()
+                # turn off light
+                toggleLED(False)
                 # print(inputText)
                 if pswd in inputText:
                     setLockStatus(LOCK_NAME, False, recogName=user_name)
-                    lock(False)
+
+                    # hardware based reCaptcha
+                    print("how many times is the LED blinking")
+                    ans = blinkLED()
+                    user_ans = listenFor()
+                    if ans in user_ans:
+                        lock(False)
+
                 else:
                     print(f"the password was incorrect: '{pswd}'")
                     lock(True)
