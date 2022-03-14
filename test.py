@@ -21,7 +21,7 @@ while True:
     #make light and lock False
     GPIO.output(ledGPIO, True)
     GPIO.output(led2GPIO, True)
-    GPIO.output(lockGPIO, True)
+    GPIO.output(lockGPIO, False)
     if GPIO.input(pushbuttonGPIO):
         print("button pressed")
 
