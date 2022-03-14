@@ -11,6 +11,7 @@ pyyaml = "*"
 gpio = "*"
 picamera = "*"
 requests = "*"
+pyttsx3 = "*"
 
 [dev-packages]
 
