@@ -17,10 +17,10 @@ GPIO.setup(pushbuttonGPIO, GPIO.IN)#maybe 20/25
 #run
 #accept inputs
 while True:
-    #make light and lock true
-    GPIO.output(ledGPIO, True)
-    GPIO.output(led2GPIO, True)
-    GPIO.output(lockGPIO, True)
+    #make light and lock False
+    GPIO.output(ledGPIO, False)
+    GPIO.output(led2GPIO, False)
+    GPIO.output(lockGPIO, False)
     # if GPIO.input(pushbuttonGPIO):
     #     print("button pressed")
 
