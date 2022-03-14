@@ -17,7 +17,8 @@ GPIO.setmode(GPIO.BCM)
 #led/lock
 GPIO.setup(18, GPIO.OUT)
 #button
-GPIO.setup(20, GPIO.IN)#maybe 20/25
+pushbuttonGPIO=20
+GPIO.setup(pushbuttonGPIO, GPIO.IN)#maybe 20/25
 # load env variables
 # .env file should include:
 # SID=
@@ -199,7 +200,7 @@ try:
             checkLockStatus(LOCK_NAME)
             counter = 0
         # listen for button presses every tick
-        if GPIO.input(25):
+        if GPIO.input(pushbuttonGPIO):
             pass
         else:
             os.system(
