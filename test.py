@@ -10,7 +10,7 @@ GPIO.setup(ledGPIO, GPIO.OUT)
 lockGPIO=21
 GPIO.setup(lockGPIO, GPIO.OUT)
 #button
-pushbuttonGPIO=25
+pushbuttonGPIO=20
 GPIO.setup(pushbuttonGPIO, GPIO.IN)#maybe 20/25
 
 #run
