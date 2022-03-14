@@ -201,7 +201,7 @@ try:
             checkLockStatus(LOCK_NAME)
             counter = 0
         # listen for button presses every tick
-        if GPIO.input(pushbuttonGPIO):
+        if not GPIO.input(pushbuttonGPIO):
             pass
         else:
             os.system(
