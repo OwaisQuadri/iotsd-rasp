@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import time
 #setup gpio
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -11,7 +12,7 @@ GPIO.setup(led2GPIO, GPIO.OUT)
 lockGPIO=21
 GPIO.setup(lockGPIO, GPIO.OUT)
 #button
-pushbuttonGPIO=20
+pushbuttonGPIO=8
 GPIO.setup(pushbuttonGPIO, GPIO.IN)#maybe 20/25
 
 #run
@@ -21,8 +22,8 @@ while True:
     GPIO.output(ledGPIO, False)
     GPIO.output(led2GPIO, False)
     GPIO.output(lockGPIO, False)
-    # if GPIO.input(pushbuttonGPIO):
-    #     print("button pressed")
+    if GPIO.input(pushbuttonGPIO):
+        print("button pressed")
 
 
 
