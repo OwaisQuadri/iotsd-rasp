@@ -1,5 +1,8 @@
 import RPi.GPIO as GPIO
 import time
+import pyttsx3
+#setup speech synthesis
+synthesizer=pyttsx3.init()
 # setup gpio
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -18,11 +21,14 @@ GPIO.setup(pushbuttonGPIO, GPIO.IN)  # maybe 20/25
 # run
 # accept inputs
 try:
+    synthesizer.say("Here we go")
+    synthesizer.runAndWait()
+    synthesizer.stop()
     while True:
         # make light and lock False
         GPIO.output(ledGPIO, True)
         GPIO.output(led2GPIO, True)
-        GPIO.output(lockGPIO, True)
+        GPIO.output(lockGPIO, )
         if GPIO.input(pushbuttonGPIO):
             print("button pressed")
 except:
