@@ -193,6 +193,7 @@ def setLockStatus(lock_name, status, recogName=None):
 
 # handle interrupt
 try:
+    toggleLED(True)
     counter = 0
     while True:
         # every 100000 ticks check the lock status
