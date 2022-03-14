@@ -14,8 +14,10 @@ LOCK_NAME = "lock1"
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
+#led/lock
 GPIO.setup(18, GPIO.OUT)
-GPIO.setup(25, GPIO.IN)
+#button
+GPIO.setup(20, GPIO.IN)#maybe 20/25
 # load env variables
 # .env file should include:
 # SID=
