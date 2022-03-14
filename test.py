@@ -15,7 +15,8 @@ GPIO.setup(pushbuttonGPIO, GPIO.IN)#maybe 20/25
 
 #run
 #accept inputs
+while True:
 
-if GPIO.input(pushbuttonGPIO):
-    print("button pressed")
+    if GPIO.input(pushbuttonGPIO):
+        print("button pressed")
 
