@@ -21,9 +21,6 @@ GPIO.setup(pushbuttonGPIO, GPIO.IN)  # maybe 20/25
 # run
 # accept inputs
 try:
-    synthesizer.say("Here we go again")
-    synthesizer.runAndWait()
-    synthesizer.stop()
     while True:
         # make light and lock False
         GPIO.output(redLED, True)
