@@ -9,9 +9,10 @@ twilio = "*"
 python-dotenv = "*"
 pyyaml = "*"
 gpio = "*"
-picamera = "*"
+picamera = {extras = ["array"], version = "*"}
 requests = "*"
 pyttsx3 = "*"
+"rpi.gpio" = "*"
 
 [dev-packages]
 
