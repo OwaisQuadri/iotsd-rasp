@@ -14,11 +14,16 @@ LOCK_NAME = "lock1"
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-#led/lock
-GPIO.setup(18, GPIO.OUT)
-#button
-pushbuttonGPIO=20
-GPIO.setup(pushbuttonGPIO, GPIO.IN)#maybe 20/25
+# GPIO pin setup
+pushbuttonGPIO = 18
+redLED = 14
+greenLED = 15
+lockGPIO = 23
+# GPIO connection setup and direction
+GPIO.setup(redLED, GPIO.OUT)
+GPIO.setup(greenLED, GPIO.OUT)
+GPIO.setup(lockGPIO, GPIO.OUT)
+GPIO.setup(pushbuttonGPIO, GPIO.IN)
 # load env variables
 # .env file should include:
 # SID=
@@ -100,35 +105,27 @@ def lock(locked):
     #
     if locked:
         print('lock')
+        toggleLED(True,'red')
+        toggleLED(False,'green')
     else:
         print('unlocked')
+        toggleLED(False,'red')
+        toggleLED(False,'green')
 
 
-def toggleLED(bool):
-    GPIO.output(18, bool)
+def toggleLED(bool, color):
+    if color.lower() == 'red':
+        GPIO.output(redLED, bool)
+    elif color.lower() == 'green':
+        GPIO.output(greenLED, bool)
+
 # function to listen
-
-
-def pulseLight(secs):
-    toggleLED(True)
-    sleep(secs)
-    toggleLED(False)
-
-
-def blinkLED():
-    num = random.choice(10)
-    for n in num:
-        pulseLight(0.5)
-    return num
-
-
 def listenFor():
     total = ""
     # if True:
     #     return "password"
     with spr.Microphone() as mic:
-        pulseLight(0.1)
-        print('say it now:')
+        ###########SAY IT NOW###########
         r.adjust_for_ambient_noise(mic, duration=.2)
         audio = r.listen(mic)
         text = ""
@@ -193,7 +190,6 @@ def setLockStatus(lock_name, status, recogName=None):
 
 # handle interrupt
 try:
-    toggleLED(True)
     counter = 0
     while True:
         # every 100000 ticks check the lock status
@@ -229,27 +225,31 @@ try:
                                        pswd)
                 # after 10 seconds:
                 sleep(10)
-                toggleLED(True)  # turn on light
+                toggleLED(True,'green')  # turn on light
                 # check if password matches voice input
                 inputText = listenFor()
                 # turn off light
-                toggleLED(False)
+                toggleLED(False,'green')
                 # print(inputText)
                 if pswd in inputText:
                     setLockStatus(LOCK_NAME, False, recogName=user_name)
 
                     # hardware based reCaptcha
-                    print("how many times is the LED blinking")
-                    ans = blinkLED()
+                    #make the speaker say something
+                    ################REPEAT AFTER ME#################
+                    ans = 'unlock'
                     user_ans = listenFor()
                     if ans in user_ans:
                         lock(False)
 
                 else:
+                    ###########DOOR LOCKED###########
                     print(f"the password was incorrect: '{pswd}'")
                     lock(True)
                     setLockStatus(LOCK_NAME, True)
+
         counter += 1
 except KeyboardInterrupt:
     print("^C Detected: Exiting ...")
-    GPIO.output(18, False)
+    toggleLED(False,'green')
+    toggleLED(False,'red')
