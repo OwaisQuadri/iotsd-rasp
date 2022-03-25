@@ -38,3 +38,6 @@ except:
     GPIO.output(redLED, False)
     GPIO.output(greenLED, False)
     GPIO.output(lockGPIO, False)
+    synthesizer.say("oof!")
+    synthesizer.runAndWait()
+    synthesizer.stop()
