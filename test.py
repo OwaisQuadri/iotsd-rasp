@@ -34,10 +34,10 @@ try:
             synthesizer.say("Nice!")
             synthesizer.runAndWait()
             synthesizer.stop()
-except:
+except Exception as e:
     GPIO.output(redLED, False)
     GPIO.output(greenLED, False)
     GPIO.output(lockGPIO, False)
-    synthesizer.say("oof!")
+    print(e)
     synthesizer.runAndWait()
     synthesizer.stop()
