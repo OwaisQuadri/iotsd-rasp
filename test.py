@@ -28,7 +28,7 @@ try:
         # make light and lock False
         GPIO.output(redLED, True)
         GPIO.output(greenLED, True)
-        GPIO.output(lockGPIO, )
+        GPIO.output(lockGPIO, True)
         if GPIO.input(pushbuttonGPIO):
             print("button pressed")
             synthesizer.say("Nice!")
