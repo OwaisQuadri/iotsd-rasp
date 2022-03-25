@@ -29,11 +29,12 @@ try:
         GPIO.output(redLED, True)
         GPIO.output(greenLED, True)
         GPIO.output(lockGPIO, True)
-        if GPIO.input(pushbuttonGPIO):
+        if not GPIO.input(pushbuttonGPIO):
             print("button pressed")
             synthesizer.say("Nice!")
             synthesizer.runAndWait()
             synthesizer.stop()
+            break
 except Exception as e:
     GPIO.output(redLED, False)
     GPIO.output(greenLED, False)
