@@ -11,11 +11,8 @@ redLED = 14
 greenLED = 15
 GPIO.setup(redLED, GPIO.OUT)
 GPIO.setup(greenLED, GPIO.OUT)
-# lock
-lockGPIO = 23
-GPIO.setup(lockGPIO, GPIO.OUT)
 # button
-pushbuttonGPIO = 18
+pushbuttonGPIO = 23
 GPIO.setup(pushbuttonGPIO, GPIO.IN)  # maybe 20/25
 
 # run
@@ -25,7 +22,6 @@ try:
         # make light and lock False
         GPIO.output(redLED, True)
         GPIO.output(greenLED, True)
-        GPIO.output(lockGPIO, True)
         if GPIO.input(pushbuttonGPIO):
             print("button pressed")
             synthesizer.say("Nice!")
@@ -33,7 +29,6 @@ try:
             synthesizer.stop()
             GPIO.output(redLED, False)
             GPIO.output(greenLED, False)
-            GPIO.output(lockGPIO, False)
             break
 except Exception as e:
     print(e)
