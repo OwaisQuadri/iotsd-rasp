@@ -26,16 +26,14 @@ try:
         GPIO.output(redLED, True)
         GPIO.output(greenLED, True)
         GPIO.output(lockGPIO, True)
-        if not GPIO.input(pushbuttonGPIO):
+        if GPIO.input(pushbuttonGPIO):
             print("button pressed")
             synthesizer.say("Nice!")
             synthesizer.runAndWait()
             synthesizer.stop()
+            GPIO.output(redLED, False)
+            GPIO.output(greenLED, False)
+            GPIO.output(lockGPIO, False)
             break
 except Exception as e:
-    GPIO.output(redLED, False)
-    GPIO.output(greenLED, False)
-    GPIO.output(lockGPIO, False)
     print(e)
-    synthesizer.runAndWait()
-    synthesizer.stop()

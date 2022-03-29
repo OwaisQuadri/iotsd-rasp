@@ -10,8 +10,9 @@ import dotenv
 from twilio.rest import Client
 import os
 import speech_recognition as spr
+import pyttsx3
 LOCK_NAME = "lock1"
-
+speaker=pyttsx3.init()
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 # GPIO pin setup
