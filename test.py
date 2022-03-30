@@ -23,8 +23,6 @@ try:
         GPIO.output(redLED, True)
         GPIO.output(greenLED, True)
         if GPIO.input(pushbuttonGPIO):
-            pass
-        else:
             print("button pressed")
             synthesizer.say("Nice!")
             synthesizer.runAndWait()
