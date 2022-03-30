@@ -12,7 +12,7 @@ greenLED = 15
 GPIO.setup(redLED, GPIO.OUT)
 GPIO.setup(greenLED, GPIO.OUT)
 # button
-pushbuttonGPIO = 23
+pushbuttonGPIO = 18#23
 GPIO.setup(pushbuttonGPIO, GPIO.IN)  # maybe 20/25
 
 # run
@@ -23,6 +23,8 @@ try:
         GPIO.output(redLED, True)
         GPIO.output(greenLED, True)
         if GPIO.input(pushbuttonGPIO):
+            pass
+        else:
             print("button pressed")
             synthesizer.say("Nice!")
             synthesizer.runAndWait()
